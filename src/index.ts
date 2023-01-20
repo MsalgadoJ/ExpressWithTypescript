@@ -1,9 +1,9 @@
 import express from 'express';
-import { router } from './routes/loginRoutes';
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 import { AppRouter } from './AppRouter';
 import './controllers/LoginController';
+import './controllers/RootController';
 
 const app = express();
 
@@ -11,7 +11,6 @@ const app = express();
 // This should be above the router, otherwise it won't work
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({ keys: ['session'] }));
-app.use(router);
 app.use(AppRouter.getInstance);
 
 app.listen(3000, () => {

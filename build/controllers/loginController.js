@@ -10,10 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const decorators_1 = require("./decorators");
-function logger(req, res, next) {
-    console.log('Request made!!');
-    next();
-}
 let LoginController = class LoginController {
     getLogin(req, res) {
         res.send(`
@@ -30,14 +26,45 @@ let LoginController = class LoginController {
           </form>
     `);
     }
+    postLogin(req, res) {
+        const { email, password } = req.body;
+        // the req object doesn't have a "body" property.
+        // the only way to access it is through the bodyParser middleware
+        if (email &&
+            password &&
+            email === 'bagui@gmail.com' &&
+            password === '54321') {
+            req.session = { loggedIn: true };
+            res.redirect('/');
+        }
+        else {
+            res.send('Invalid email or password');
+        }
+    }
+    getLogout(req, res) {
+        req.session = undefined;
+        res.redirect('/');
+    }
 };
 __decorate([
     (0, decorators_1.get)('/login'),
-    (0, decorators_1.use)(logger),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], LoginController.prototype, "getLogin", null);
+__decorate([
+    (0, decorators_1.post)('/login'),
+    (0, decorators_1.bodyValidator)('email', 'password'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], LoginController.prototype, "postLogin", null);
+__decorate([
+    (0, decorators_1.get)('/logout'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], LoginController.prototype, "getLogout", null);
 LoginController = __decorate([
     (0, decorators_1.controller)('/auth')
 ], LoginController);
